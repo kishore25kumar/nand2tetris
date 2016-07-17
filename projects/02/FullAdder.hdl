@@ -11,7 +11,25 @@ CHIP FullAdder {
     IN a, b, c;  // 1-bit inputs
     OUT sum,     // Right bit of a + b + c
         carry;   // Left bit of a + b + c
+	// sum = !a * !b * c + !a * b * !c + a * !b * !c + a * b * c  
+	// carry = !a * b * c + a * !b * c + a * b * !c + a * b * c
 
     PARTS:
-    // Put you code here:
+    Not(in = a, out = nota);
+	Not(in = b, out = notb);
+	Not(in = c, out = notc);
+	
+	And3(a = nota, b = notb, c = c, out = sum1);
+	And3(a = nota, b = b, c = notc, out = sum2);
+	And3(a = a, b = notb, c = notc, out = sum3);
+	And3(a = a, b = b, c = c, out = sum4);
+	Or4(a = sum1, b = sum2, c = sum3, d = sum4, out = sum);
+	
+	And3(a = nota, b = b, c = c, out = carry1);
+	And3(a = a, b = notb, c = c, out = carry2);
+	And3(a = a, b = b, c = notc, out = carry3);
+	And3(a = a, b = b, c = c, out = carry4);
+	
+	Or4(a = carry1, b = carry2, c = carry3, d = carry4, out = carry);
+	
 }
